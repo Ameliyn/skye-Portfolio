@@ -1,0 +1,50 @@
+
+Run the executable, "spin_torusA.exec" by typing
+
+./spin_torusA.exec
+
+Hit the 's' key to make it spin.
+
+
+Your task is to write a program that duplicates
+the behavior of this executable (you need not print the
+text that shows in the window).
+
+ Read the data from torusA.xyz 
+ There are to be no command line arguments.
+ The torusA.xyz data is centered at the origin
+ but you should move it 3 units down the z-axis
+ BEFORE displaying it.
+ Use a half angle of 30 degrees.
+ The screen must be 700 pixels wide and high.
+ The program responds to only 2 keys :
+ the 's' key will cause the torus to spin about the diagonal
+ (1 degree per frame)
+ and the 'q' key will cause the program to quit.
+ The other keys do nothing.
+ Note that the display is a simple wireframe.
+
+ Solving the above is worth 90 percent of the test.
+ To get the other 10 percent, you must compute
+ and print the area of this polygonal approximation to
+ a torus.  It may be useful to know that if A and B are two vectors,
+ then the magnitude (length) of the cross product of A and B turns
+ out to be the area of the parallelogram that 
+ A and B span.
+
+
+   A
+   /          
+  /           
+ /____________
+             B
+
+
+
+   A_____________
+   /            /
+  /            /
+ /____________/
+             B
+
+
