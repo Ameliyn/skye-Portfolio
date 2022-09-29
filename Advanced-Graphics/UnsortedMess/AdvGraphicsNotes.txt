@@ -1,0 +1,80 @@
+Advanced Graphics
+Office Hours: 
+-M/W 11:20-12
+-T/TH 9-9:40
+
+
+Equations for 3d shapes (object space)
+All are within:
+double inc = 0.01;
+for(int u = ulo; u <= uhi; u +=inc){
+for(int v = vlo; v <= vhi; v +=inc){}
+}
+
+Cylinder
+X^2 + Z^2 -1 = 0
+u = [0,2*M_PI]
+v = [0,height]
+x(u,v) = cos(u);
+y(u,v) = v;
+z(u,v) = sin(u);
+
+Sphere
+//"Cylindrical Coordinates" - Works like taking tops and bottoms 
+//of cylinders and placing them without the innards
+//this one looks uniform
+u = [0,2*M_PI]
+v = [-1,1]
+r = sqrt(1-v*v); // radius percent
+x(u,v) = r * cos(u);
+y(u,v) = v;
+z(u,v) = r * sin(u);
+
+//Other way
+//this one favors the poles and looks less uniform
+u = [0,2*M_PI]
+v = [-M_PI/2, M_PI/2]
+u = longitude, v = latitude
+x = cos(v)*cos(u);
+y = sin(v);
+z = cos(v)*sin(u);
+
+
+Torus
+//parametric
+u = [0,2*M_PI]
+v = [0,2*M_PI]
+x = 2 * cos(u);
+y = cos(v) * (2 * sin(u) + 10);
+z = sin(v) * (2 * sin(u) + 10);
+
+//circle up on y axis rotating about z axis
+u = [0,2*M_PI]
+v = [0,2*M_PI]
+x = (R + rcos(u)) cos(v);
+y = (R + rcos(u)) sin(v);
+z = rsin(u);
+//implicit
+4R(x^2+y^2) = (x^2 + y^2 + Z^2 + R^2 - r^2)^2
+4RX^2 + 4Ry^2 = (x^2 + y^2 + Z^2 + R^2 - r^2)^2
+//R=10; r=2
+x^4 + 2x^2y^2 + 2x^2z^2 + y^4 + 2y^2z^2 + z^4 + 152x^2 + 152y^2 + 192z^2 + 9216 = 0
+
+Alternate Torus
+u = [0,2*M_PI]
+v = [0,2*M_PI]
+x = (c + a*cos(v)) * cos(u)
+y = (c + a*cos(v)) * sin(u)
+z = a * sin(v)
+
+
+
+
+Ray Tracing:
+Take 2d film and send out rays and return closest intersecting object
+For mirror, find normal and then bounce light to find if any other objects
+For shadows, in light model send ray to light and see if anything in the way
+
+Deal with the intersection:
+
+
