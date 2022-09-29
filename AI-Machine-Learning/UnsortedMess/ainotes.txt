@@ -1,0 +1,171 @@
+Here's the beginning of my notes on AI+Machine Learning
+
+Python Things
+- Import basically copies and pastes the file imported into the line of the import statement
+- " if __name__ == "__main__": " basically ensures that those lines will only be run by the main.py function
+-- Whatever class you run, the __name__ is __main__. For all other classes, the __name__ is the file name.
+
+* Operator in Python:
+Wraps or unwraps a list (when used in a function call)
+--In a function definition, it wraps all values into a list (any length)
+--In a function call, unwraps a list into a number of arguments (any length)
+
+** Operator with Dictionaries in Python:
+Lines up the values of the dictionary with the arguments in a function call
+--NOTE: Dictionary key names need to exactly match the arguments for a function with exact arguments
+--For a function with parameter **kwargs, any dictionary is accepted and kwargs is a dictionary itself
+Ex. vals = {"a": "1", "b": "2", "c": "3"}
+def tricky(a,b,c): return;
+tricky(**vals)
+
+Function weirdness:
+--If first line (or multiple lines) is ''' SOMETHING ''' this is a docstring (which is the documentation for the function (like the java /** */ above function)
+--You can pass functions by putting their identifier without parentheses
+--Functions can return multiple things by separating them by commas (making a tuple) and then when calling the function, call it with commas (tuples auto create/destroy)
+EX: def mult(a,b): return a,b; c, d = mult(1,2);
+def something(static, *extras, keyword, **kwargs):
+--The first parameter is standard where anything single variable is put into that spot
+--In here, the * means make a list of all the other parameters passed to this function.
+--After the generic (*extras), any parameters after that are keyword arguments (that must be named specifically)
+  --NOTE: Keywords after *extras are \required\ for a function call.
+--**kwargs is a dictionary of optional keyword arguments
+
+Example (because it is confusing)
+
+def tricky(a,*b,c):
+    return something
+
+Legal calls to this function are: tricky(x,[1,2,3,4],12,c=5)
+
+
+Heuristic Search
+when used in a map with costs to get different places
+Node   g()  h()   f()
+g = total cost thus far
+h = theoretical remaining cost to get somewhere (no idea how to solve for this)
+f = g + h
+Goes through and choose the smallest f value as our next spot to "open up" (if the same, go for the largest g)
+Take one node, and find f,g,h for all connected nodes (our start position has a cost of 0)
+
+Arad		366   Mehadia		    241
+Bucharest	0     Neamt		        234
+Craiova	    160   Oradea		    380
+Drobeta	    242   Pitesti		    100
+Eforie		161   Rimnicu Vilcea    193
+Fagaras	    176   Sibiu			    253
+Giurgiu	    77    Timisoara		    329
+Hirsova	    151   Urziceni		    80
+Iasi		226   Vaslui	        199
+Lugoj		244   Zerind		    374
+
+Each search:
+Node            g       h       f
+
+Arad            0       366     366
+Zerind          75      374     449
+Sibiu           140     253     393  Step 2 opens Sibiu
+Timisoara       118     329     447
+Add Sibiu to this section
+Fagaras         239     176     415  Step 3 opens Fagaras
+Rimnicu Vilcea  220     193     413
+Oradea          291     380     671
+Add Fagaras and Sibiu to this section
+Bucharest       450     000     450  Step 5 goes back and opens Rimnicu Vilcea
+Add Rimnicu and Sibiu to this section
+Pitesti         317     100     417  Step 4 opens Pitesti
+Craiova         366     160     526
+Add Pitesti Rimnicu and Sibiu to this section
+Bucharest       417     0       417  Smallest f value, we're done
+
+
+Adversarial Search
+Examples: Tic-Tac-Toe, checkers, chess,
+Features: deterministic games, no luck, turn-taking, two players, zero-sum, perfect information
+
+Game Tree: all possible outcomes
+Number of legal board states: (about 10^3 for tic-tac-toe or 10^120 for Chess)
+
+Don't store the entire tree, (for small games we just don't, for large games it's impossible)
+
+Minimax idea:
+Players play perfectly (play to get the highest reward for themselves). Algorithm chooses what will be the best outcome
+for them.
+
+Creating perfect Tic-Tac-Toe
+
+
+
+Altaf's interview question:
+Take a list and sort it by the square value in O(n) time:
+templist
+origlist
+i = 0
+j = len(origlist)
+while(len(templist) < len(origlist)-1){
+    if(origlist[i]^2 > origlist[j]^2){
+        templist.append(origlist[i]^2)
+        i++
+    }
+    else{
+        templist.append(origlist[j]^2)
+        j--
+    }
+}
+
+
+Basic AI Idea:
+Take a data set, set aside a portion for testing, train the AI with the rest, then test the AI with the final portion
+and that tells you how good your AI is.
+
+Cross-validation (in the training stage):
+Cut data into quarters, then train on three and validate on others, then take average of four different options and
+finally train the data on the whole dataset for production.
+--If you do well on a validation set, it means that the training set and validation set are similar, and you have not
+  over-fit the data
+
+
+Linear Regression:
+--Works in as many dimensions as you want with multiple inputs and one output
+-- y = mx+b => yhat = theta0 + theta1*X1 + ... + thetanXn
+  -- theta0 = bias
+
+Find the best one with minimizing the Mean Squared Error:
+-- m = mean
+-- MSE(X, htheta) = (1 / m) * sum(1->m)(yhati-yi)^2
+
+The solution exists but is long-winded (and slow for many features), only works for linear (line/plane/hyperplane)
+
+Gradiant Descent:
+--Start with random initial value, find gradiant at that point, and step towards the center
+  --If gradiant very steep, take big step, if shallow, take small step
+See slideshow
+
+Batch Gradient Descent:
+--Do gradient descent for all data points (slow for large sets)
+
+Stochastic Gradient Descent:
+--Adjust for one data point at a time, in random order. Doesn't have to look at the whole data set
+--Can bounce around due to randomness
+
+Mini-batch gradient descent:
+--Middle point between batch and stochastic
+
+
+Polynomial Regression:
+--Do linear regression but add more features (theta0 + theta1x1 +theta2(x1^2) + etc)
+  --The higher the degree of the polynomial leads to over-fitting and under-fitting
+
+Bias/variance tradeoff
+--Bias = what you've decided the line is in advance (decide it's a line, you get a line, decide it's a parabola, you get
+  a parabola, etc.) ("turning bias up means smoother curve")
+--Variance == amount algorithm can adjust to the data (1-bias)
+--Irreducible Error = noise (other variables, etc)
+
+How to prevent over-fitting:
+-- Use simpler model
+-- Constrain the weights (constrain thetas)
+-- Stop early (don't train too much)
+
+
+
+
