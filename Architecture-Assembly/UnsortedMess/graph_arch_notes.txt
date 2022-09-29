@@ -1,0 +1,1179 @@
+Linux Shit:
+---- ls -> list files
+---- cd -> change directory
+---- *command* & -> multithread (allow for use of console while in emacs)
+---- ctrl-c -> close what working on
+---- sftp *target@computername* -> "Secure file transfer protocol"
+---- get *filename* -> take file from that computer and copy it to your computer
+---- filename cheat: *partofFile*.pdf -> asterisks are wildcards and it gets any file that
+     includes "partofFile" and ends in .pdf
+---- cc -> call c compiler
+---- gcc -o *name* *fileName* -> set a.out to be *name*
+---- cc -lm -lX11 ->  "-lm" => link to math  "-lX11" => link to linux graphical library.
+---- gcc -o *CompiledFileName* *FiletoCompile.c* -lm -lX11 -> use all stuff before and make
+     it work for graphical things
+---- gcc -O (capital O, makes the compiler optimize the code)
+---- fg creates a whole bunch of files that are different steps of the compiler.
+----"|" takes the output of the previous command and pipes it through another command
+----"man" brings us the manual for a command
+----"tar xfz *filename*.tgz" untar file (similar to a zip file, but different?)
+----"od -t x1 mstore.o | less" takes binary file and makes it 'readable' in hex
+    od = object dump (a way to inspect and look at object files
+----"objdump -d mstore.o" inspect and deconstruct binary file (a bit)
+    53 = push | 48 89 = mov
+
+
+C programming shit:
+----Four stages: Preprocessing, C-Compiler creates an assembly, Assembler encodes, Linker
+    CC -c takes source files and goes through first three steps (preprocess, compiles, assembles)
+    linker links .o files plus libraries and makes executable file (cc can do this and does it smartly)
+----"#define" makes constant GLOBAL variables for the program
+----"#include" includes something, libraries are in <> and files are just names
+----"#pragma once" process this header file only once (it is important if a header file references another header file)
+----C passes everything EXCEPT ARRAYS by value (as copies)
+    --can use pointers to pass things to pass actual things
+      (arrays are always pointers so that makes sense)
+----Strings: arrays of characters ended by "\0"
+----"->" operator (instead of "class.method" (java) we use "class->method")
+    --but we can still us ".variable" for public variables on non-pointers
+----1 byte = 8 bits = 256 possible numbers
+----Data types:
+    --char => 1 byte
+    --int => 4 bytes
+    --long => 8 bytes
+    --float => 4 bytes
+    --double => 8 bytes
+    --long double => 10 bytes
+----Pointers:
+  --char c; //declares char c
+  --c = 65; //initializes char c to 65 ('a')
+  --char *p; //declares pointer p to be pointer of type char
+  --p = &c;  //p gets memory location of c
+  --p = 0; //sets p to be the memory location 0
+  --printf("%c\n", *p); //*p gets the value of the pointer (goes back and forth)
+  --char **argv
+    --argv points to pointers (an array of pointers to arrays)
+    --printf line returns "Segmentation fault (core dumped)" because the OS got mad.
+    --char *p is a pointer of type char in memory (declared by "*")
+      --standardly takes up 8 bytes (64bit computing)
+    --generate pointer of existing thing "&c"
+    --can manufacture addresses
+    --*p is the same as p[0] in this previous code (dereferencing a pointer gives you the value)
+----Structs:
+  --"struct cplx {double re; double im;}"
+  --*in main* "struct cplx c1 = {1.0, 0.0}"
+    --an inanimate object to store multiple variables (two doubles in this case)
+    --can create with simple curly braces
+----Bitwise operations:
+    --FUTURE SKYE FIGURE THIS OUT
+----Command line arguments
+    --main can have arguments (as expected)
+      --"int main(int argc, char **argv){}"
+      --"argc" = integer, how many words on command line
+      --"argv" = array of pointers to char arrays (array of strings)
+----C booleans (0 is false, anything else is true)
+----T A[r][c] ==> Multidimensional array (2d array)
+----T *A[r] ==> Multilevel array (every row can have a different number of columns)
+
+
+CS 367 Graphics office hours: MWF 10:20-11:20 in Bodine 301
+Alain office hours Bodine 302A
+
+Vector shit:
+A = <2,3,4>
+B = <5,6,7>
+Add => C = <2+5,3+6,4+7> = <7,9,11> (long side of a parallelogram from two vectors)
+Sub => C = <2-5,3-6,4-7> = <-3,-3,-3> (short side of a parrallelogram from two vectors
+Length => |A| = sqrt((deltax)^2 + (deltay)^2 + (deltaz)^2)
+Unit Vector (A sub U) => A / |A| = <2,3,4> * 1/sqrt(29) = <0.371,0.557,0.743> (length is 1)
+Dot Product => A Dot C = 2*5 + 3*6 + 4*7 = 70
+A Dot B = |A|*|B|*cos(angle between)
+A Dot B = B Dot A
+angle between = aCos((A Dot B)/|A|*|B|)
+angle Between A,B = arcCos(70/sqrt(29)*sqrt(110)) = something
+
+A cross B ==> C = <3*7 - 6*4, -(2*7 - 5*4), 2*6- 5*3> = <-3, 6, -3>
+A Cross B is a vector perpendicular to both vectors
+(A cross B) = -1* (B cross A)
+C Dot A = 0; C Dot B = 0
+
+Backface Elimination:
+Works for convex single objects
+Find normal vector (cross product) and if angle between cross and point is less than 90 then draw, otherwise dont
+p dot q ==> less than 90 is positive, more than 90 is negative
+
+foreach polygon, find cross of 0,1 and 0,2 (let be c);
+Then if c dot origin to 0 is greater than 0, draw polygon
+
+Two's complement:
+  Take positive number, reverse bits and add 1 (-2 = ~2 + 1)
+
+Functions and Parameter Passing in C: (2 September, 2021 Jeff)
+--Functions pass copies of values inherently (as expected, methods cannot directly
+  edit main program variables.
+  --CAREFUL: Arrays break this. AND ONLY ARRAYS (because methods send memory location of
+    initial part of array. In methods, always make copies of the arrays if you don't
+    want to change them.
+--Arrays don't have a .length, that is why G_polygon needs the number of items.
+
+A look behind the curtain and pointers: (3 September, 2021 Alain)
+--fg shows us the steps the compiler goes throug, then call "cc hello.c"
+  --First the cpp makes "hello.i" (DONT KNOW WHAT THIS IS LMAO GOOD LUCK)
+  --Then ccl (c compiler) creates "hello.s" in assembly language. (mostly assembly instructions)
+    --First column are largely labels ("main:")
+    --first column contains psuedoinstructions (".anything")
+  --Then as makes "hello.o" which is a binary file (hard to show with less/emacs/regular editors
+    --some code allows us to read it like assembly "objdump -d hello.o | less"
+      --objdump is a tool in linux that lets us look at binary files (converts it to stuff we can read)
+      --"-d" tells the program to find the instructions, and largely ignore the raw data
+      --"|" takes the output of the previous command and pipes it through another command
+      --objdump will show largely the same thing as "hello.s"
+  --Then "ld" makes "hello" which is the executable file
+    --"ld" includes the libraries? tf? I think they are inherent libraries that allow c to work
+      --by default it includes the libraries (so i was right a line above this)
+        (such as IO, or string, etc)
+      --"-lm" tells the compiler to include math AS WELL AS "#include <math.h>"
+        (we do it twice because C)
+      
+.xy file structure:
+--Number of Verticies (int)
+--double coordinates of verticies (double x double y)
+--Number of polygons (int)
+--Each polygon ("number of verticies" "verticy number" "verticy number") (all ints)
+--Each polygon's color ("double r" "double g" "double b")
+
+CS367 poly_perimetersS Lab:
+
+--Count triangles twice, count non-triangles once
+  --triangles are poitive slope then negative slope or negative slope then positive slope
+    when vertex is in between xouters
+    --perhaps worry about if a line is drawn twice on a polygon or not (two horizontal overlapping
+      lines with vertex in the middle)
+
+Bitwise and Signed/Unsigned shit:
+--When evaluating, if you have one unsigned and one signed, they are evaluated as unsigned
+--signed -1 = 1111 1111 1111 1111	(255U = -1)
+         -2 = 1111 1111 1111 1110	(You subtract 1 from 255U to get -2)
+	 -3 = 1111 1111 1111 1101  (You subtract 2 from 255U to get -3)
+	 -4 = 1111 1111 1111 1100	(...)
+--1 << 1  (Shift by one position)
+  0001 << 1 = 0010 (multiply by magnitude of 2)
+  0X0012 << 1 = 0X0024
+  v << k ≡ v × 2^k
+--1 >> 1 (Shift right by one position)
+  0001 >> 1 = 0000 (shift bits)
+  1111 1111 (-1)>> 1 == 1111 1111 (-1)
+  1111 1110 (-2)>> 1 == 1111 1111 (-1)
+  1111 1100 (-4)>> 2 == 1111 1111 (-1)
+  0X0012 >> 1 = 0X0005
+  v >> k = floor(v/2^k)
+  Fills in all positions vacated with the most significant bit (for signed values) (arithmetic shift)
+  Fills in all positions vacated with zeroes (for unsigned values) (logical shift)
+  --Example:
+    char c = -4;
+    c >> 2 == -1; //true (any vacated bit positions have been backfilled with most significant bit)
+    unsigned char cc = (unsigned char) -4; cc == 1111 1100 (252 unsigned (-4 signed))
+    cc >> 2 == 63 //true (any vacated bit positions have been backfilled with zeroes)
+--& operator
+  1111 1011 & 1011 0011 == 1011 0011
+--| operator
+  1111 1011 | 1011 0011 == 1111 1011
+--~ operator
+  ~1101 1111 == 0010 0000
+--^ operator (XOR operator) (XOR yourself sets register to 0)
+  1111 1101 ^ 1001 1001 == 0110 0100
+--! operator
+  0 == 1
+  anything else == 0
+
+
+MakeFile:
+  CC=cc                     ("Symbol=something" : essentially definitions)
+  EXEC=bitfun
+  OBJS=driver.o bitlib.o
+  OPTS=-std=c99 -Wall
+  SOURCES=*.c
+
+  all: $(EXEC)					 (automatically takes first recipe as target)
+  
+  $(EXEC): $(OBJS)                               (Dependencies "EXEC(target) depends on OBJS")
+  	   $(CC) $(OPTS) $(OBJS) -o ($EXEC)      (Actual steps based on dependancies to create target)
+
+  .c.o:	   	 	 	    		 (any file that has .c produces a .o through the following
+	$(CC) $(OPTS) -c *.c			  line)
+
+  clean:					 (here is what you do to undo actions)
+        rm -f *.o $(EXEC) a.out
+
+
+DeMorgan's Law (look up)
+  
+
+Floats in bits:
+
+--What does 1011.101 represent?
+  11.625 (11.5/8)
+  (first four bits normal, next four 3 bits are 1/2 1/4 1/8)
+
+--More generally our representation is b(subj) ... b(sub2) b(sub1) b(sub0) . b(sub-1) b(sub-2) ... b(sub-k)
+  Result is sum from -k to j of b(subi)*2^i
+
+  5 3/4 (5.75) to binary == 101.11
+  2 7/8 (2.875) to binary == 10.111    (NOTICE: after the decimal point is the numerator in
+  1 7/16 (1.4375) to binary == 1.0111    binary with leading zeroes if numerator is under 1/2)
+
+--limitations to this form:
+  --Cannot encode really small numbers or really big numbers
+
+IEEE floating point form:
+--(-1)^s x M x 2^E
+  sign s = sign bit (pos or neg)
+  significand M = fractional binary number (always begins with 1)
+  exponent E = weights a value a power of 2
+  E = x - 127 => E + 127 = x
+
+--Examples:
+  +1 (binary 1) = (-1)^0 + 1.0 + 2^0 == 0  01111111  00000000000000000000000
+  +23 (binary 10111) = (-1)^0 + 1.0111 * 2^4 = 0 10000011 01110000000000000000000
+
+--d.m * 2^p (d must be 1, so it doesn't need to be stored)
+
+--float (32-bit/4 byte)
+  0    00000000        00000000000000000000000
+  31  30     23       22                     0
+  s   8 bit exponent       23 bit fraction
+
+--Normalized Values:
+
+  E = exp-BIAS
+  BIAS = 2^7-1 = 127
+  M = 1 + f
+  f = 0.frac(sub22)...frac(sub1)frac(sub0)
+      (count from the right and put over 256) (or left and put to -1 power)
+
+--Denormalized Values: exp = 0
+
+  E = 1-BIAS
+  BIAS = 2^7-1 = 127
+  M = f
+  f = 0.frac(sub22)...frac(sub1)frac(sub0)
+      (count from the right and put over 256) (or left and put to -1 power)
+
+--Special Values: exp = 255
+
+  If frac == 0, value is +infinity if s = 0 and -infinity if s = 1
+  If frac != 0, value is NaN (not a number)
+
+--Multiply floats
+  multiply the mantissas, and sum the exponents (and add the signs)
+
+  (-1)^s1 * M1 * 2^E1
+  (-1)^s2 * M2 * 2^E2
+  ===================
+  (-1)^(s1^s2) * (M1 * M2) * 2^(E1+E2)
+         XOR    If (M1*M2) > 2, add 1 to E1+E2
+
+
+Memory and Storage:
+--BigEndian (most significant bit first)
+--LittleEndian (least significant bit first) (intel architecture is this)
+--90-99% of the time the endian that your computer uses does NOT MATTER TO US
+
+
+Instructions Architecture and Specifications:
+--Processor State:
+  --Program Counter (PC | %rip)
+  --Register File (16 64 bit)
+  --Condition code
+    Z (branch)
+    S (set to 1 when result is negative)
+    C (carry) (signed)
+    O (overflow) (unsigned)
+  --instruction registers
+    |-------------(64bit)------------------|
+    	        |---------(32bits)---------|
+	                  |----(16 bits)---|
+    (64bit)     (32 bit)  (16 bits)  (8 bit)
+      %rax        %eax       %ax       %al    (return value)
+      %rbx        %ebx	     %bl       %bl    (callee Saved)
+      %rcx        %ecx	     %cx       %cl    (4th Argument)
+      %rdx        %edx	     %dx       %dl    (3rd Argument)
+      %rsi        %esi	     %si       %sil   (2nd argument)
+      %rdi        %edi	     %di       %dil   (first argument)
+      %rvp        %evp	     %vp       %bpl   (Callee Savd)
+      %rsp        %esp	     %sp       %spl   (Stack Pointer)
+      %r8	  %r8d	     %r8w      %r8b   (5th argument)
+      %r9	  %r9d	     %r9w      %r9b   (6th argument)
+      ...	  	     	       	      (callee saved)
+      %r15	  %r15d      %r15w     %r15b  (callee saved)
+
+    quad word(q) doubleWord(d(l)) word(w) byte (b)
+
+--The stack pointer (%rsp)
+
+--Format of instructions
+  operation source2 source1/destination (op src2 src1/dest)
+  src1 = src1 op src2
+  
+--Operand specifications that live inside instructions encoding
+
+  IMMEDIATE
+  REGISTER
+  MEMORY
+
+--intel architecture
+  Instructions can be between 1 and 15byte length
+
+Assembly operand specifiers:
+"%rdi" register location
+"(%rdi)" value at register rdi
+"$0xf00d" immediate literal value
+"$20(%rdi)" value at literal offset of memory (M[$20+%rdi])
+"(%rdi,%rsi)" value at register offset of memory (M[%rdi + %rsi])
+"$20(%rdi,%rsi)" value at register and immediate offset of memory (M[$20 + %rdi + %rsi])
+"(,%rdi,s)" value at register scaled (M[%rdi * s])
+"$20(,%rdi,s)" value at register scaled plus immediate(M[$20 + %rdi * s])
+"(%rsi,%rdi,s)" value at register scaled plus register (M[%rsi + %rdi * s])
+"$20(%rsi,%rdi,s)" value at register scaled plus register and immediate(M[$20 + %rsi + %rdi * s])
+
+GENERAL D(R1, R2, S) ==> R1 + R2 * S + D
+	      	     	 Base of Array + index * size of element + displacement
+			 S must be 1,2,4,8 (NOTHING ELSE)
+
+The Stack(tm):
+"last in first out" paridigm
+Largely handles function calls
+"pushq S" (move the stack pointer to an empty spot and fill with S)
+  R[%rsp] <- R[%rsp] - 8
+  M[R[%rsp]] <- S
+"popq D" (Fill D with current latest stack pointer and move stack pointer back one slot (pop it))
+  D <- M[R[%rsp]]
+  R[%rsp] <- R[%rsp] + 8
+"callq" does an implicit push of the next command location (relative to function name) (and then jmp to label)
+"retq" does an implicit pop of the stack (and jmp to new %rsp+8 (old next command))
+
+
+assembly Code Specifications:
+Pointers in C are memory addresses
+--Derferencing a pointer
+  Copy pointer to register
+  Use register with inderect operand form ( "(%rdi)" )
+Local Variables are often kept in registers rather than memory (registers accessed quicker)
+
+Tools CS Assembly will be using over the next few weeks:
+"Instruction set Architecture"
+Three types:
+--Computation, Accessing Memory, Changing control flow
+--Names:
+  mov instruction:
+  Source can be immediate, register, or memory. Destination must be register or memory.
+  Memory is exclusive (both can't be memory).
+  %rax = 0xaaaaaaaaaaaaaaaa
+  %rdi = 0xbbbbccccddddeeff
+  movb,movw,movl,movq (8, 16, 32, 64)
+  mov src, dest
+  movz zero extend
+  --movzbw (change the word to 0s and move in the byte (keep the rest of the register the same))
+    movzbw %dil, %ax -->> %rax = aaaaaaaaaaaa00ff
+    movzwl %di, %eax -->> %rax = 000000000000eeff (different because moving into 32bit register)
+    movzbq == movzbl (movzbq doesnt exist because the quad is always zeroed when moving into 32bit register, BUT
+                      it can exist if moving into a 64bit register)
+  movs sign extend
+  --movsbw (sign extend the word from the byte (extend from bit 8 through bit 16))
+    movsbw %dil, %ax -->> %rax = aaaaaaaaaaaaffff (sign extend from bit 8 through bit 16)
+    movsbq %dil, %rax -->> %rax = ffffffffffffffff (sign extend from bit 8 through bit 64)
+    movswl %di, %eax -->> %rax = 00000000ffffeeff (sign extend from bit 16 through bit 32, but clear 64-32)
+  "mov 1,2" "movq 1,2" (move 1 into 2) (q for move quad)
+
+  "pushq S" (move the stack pointer to an empty spot and fill with S)
+    R[%rsp] <- R[%rsp] - 8
+    M[R[%rsp]] <- S
+  "popq D" (Fill D with current latest stack pointer and move stack pointer back one slot (pop it))
+    D <- M[R[%rsp]]
+    R[%rsp] <- R[%rsp] + 8
+
+  "lea (%rdi, %rsi, 8), %rax" lea ==> load effective address loads the address, not the value (mov would load the value)
+
+  Arithmetic Assembly Operators
+    Source can be immediate, register, or memory. Destination must be register or memory.
+    Memory is exclusive (both can't be memory).
+    "add S D" ==> D += S ("add S to D")
+    "sub S D" ==> D -= S (careful! Not commutative, D = D - S "subtract S from D")
+    "imul S D" ==> D *= S ("Multiply S to D")
+    "inc D" ==> D++
+    "dec D" ==> D--
+    "neg D" ==> D *= -1
+    "not D" ==> D = ~D
+    "and S D" ==> D = D & S
+    "or S D" ==> D = D | S
+    "xor S D" ==> D = D ^ s
+    Shift "k" can be an immediate or %cl
+    "sal k D" ==> D << k (arithmetic shift) (SPECIAL: DOES THE SAME AS "shl"; fill with 0s)
+    "shl k D" ==> D << k (logical shift) (fill with 0s)
+    "sar k D" ==> D >> k (arithmetic shift) (fill with 1s)
+    "slr k D" ==> D >> k (logical shift) (fill with 0s)
+
+Condition Codes:
+--Set after most arithmetic operations have taken place
+  "ZF" 'zero flag' set to one if result of last arithmetic operation led to result where all bits set to 0
+  "SF" 'sign flag' if result of last operation produced negative value (doesnt matter if type in program is signed or
+        unsigned, computer will set flag to 1 if most significant bit is 1)
+  "CF" 'Carry flag' set to 1 if last operation produced carry (addition, multiplication, subtraction) (ex. 2 64 bit
+        numbers added and result is 65 bits long then this flag is 1) 
+  "OF" 'Overflow flag' (and underflow set to 1 when overflow happens with two's complement operation. Unsigned
+        and signed numbers behave differently. For signed numbers look at last two bits. For unsigned numbers look
+	at last bit. CF from second to last to last XOR CF last to off register (unsigned CF on last to off register)
+  Exceptions:
+    "lea" does not touch these flags (will do extra step if has to find condition of value generated)
+    "XOR" clears CF, OF and set ZF, SF normal
+    ">>" ZF, SF, OF normal
+    "<<" MSB into CF, ZF,SF normal
+    "inc/dec" clear OF; ZF,SF normal, do not touch CF
+    "mov" unchanged
+    "jmp" unchanged
+
+Jumps:
+  "jmp L" jumps to certain label
+  "jz L" jump if zero (if ZF 1, jump)
+  "je L" jump if equal (leave blank like "je L" is same as jz)
+  "jb L" jump if below (if CF 1, jump) (unsigned)
+  "jl L" jump if less (if SF ^ OF 1, jump) (signed)
+  "ja L" jump if above (CF ==0 && ZF == 0, jump) (unsigned)
+  "jg L" jump if greater (ZF == 0 && SF == 0, jump) (signed)
+  "js L" jump if sign (SF == 1, jump)
+  "call L" (jmp L + push %rsp)
+
+
+Others:
+  "test R1, R2" # and R1, R2 but does not modify register (updates condition codes)
+  "cmp R1, R2" # sub R1, R2 (R2 -= R1) without modifying register (updates condition codes)
+
+
+Acronyms Alain is saying:
+--RISC: Reduced instruction set computer
+--CISC: Complex instruction set computer
+--ARM:
+--MIPS:
+--SPARK:
+--SUN: (bought by ORACLE and developed JAVA)
+--KFC: Kentucky Fried Chicken
+
+Tools:
+| (pipe, take output of first command and feed it into second command)
+cc (c compiler)
+"-fcf-protection-none" (helps with some sort of cybersecurity threat, to be talked about)
+"-o name"
+"mstore.c main.c" (two c files as input)
+"-0g" (optimize my code please and thank you)
+"-g" (add more debugging symbols to the program) (helps with gnu(gdb))
+
+objdump (takes object/binary file and turns it back into assembly or understandable file)
+"-d" disassemble (object file and give me something usable)
+Does not try to give c code from object file
+Returns readable file:
+--location on left (in binary)
+--machine instructions in middle
+--keywords on right along with memory registers
+"-f" (give summary):
+--file format, architecture, some flags, start address
+--Flags:
+  DYNAMIC (some libraries linked, others not)
+  D_PAGED (includes some debugging stuffs to make it more readable (identifiers))
+"-c" (preprocess, compiler, assembler, but no linking)
+
+"gdb progName"(gnu debugger)
+"disassemble labelName" (gives addresses and instructions and registers)
+"x/14xb labelName" (gives byte code at given location)
+"break main" (add breakpoint(debugpoint) at main, if run program, stop at main)
+"list" (give some information about sourcecode)
+"where" (where are we running)
+"next" || "n" (step forward (run whole next line)) (shows line to be executed)
+"print d" (prints what is in variable d)
+"help" (all of what you can do)
+"step" (steps into line (if function call goes to top of function, etc))
+
+"Jump Table" a set of addresses that the code uses to go to the right point in the switch statement
+
+Creating Assembly Code:
+FIRST FUNCTION:
+long scale(long x, long y, long z){
+     long t = x + 4 * y + 12 * z;
+     return t;
+}
+This is unoptimized assembly gives:
+
+{ #assembly code
+	.globl scale
+scale:
+	xor %rax, %rax
+	add %rdi, %rax
+
+	mov %rsi, %r10
+	imul $0x4,%r10
+	add %r10, %rax
+
+	mov %rdx, %r11
+	imul $0xc, %r11
+	add %r11, %rax
+
+	ret
+}
+
+NEXT FUNCTION:
+long f(long a[10], int i){
+     return a[i];
+}
+
+{ #assembly code
+	.globl f
+f:
+	imul $8, %rsi
+	add %rsi, %rdi
+	mov (%rsi), %rax
+	ret
+}
+Optimizing the above returns:
+{ #assembly code
+	.globl f
+f:
+	mov (%rdi, %rsi, 8), %rax
+	ret
+}
+What if we wanted the address? Use lea instead of mov! (it's the same thing, but it stores the address not the value)
+
+MORE STUFF!
+long signum(long n){
+  if(n < 0) return -1;
+  if(n == 0) return 0;
+  return 1;
+}
+
+{ #assembly code
+	.globl signum
+signum:
+	add $0, %rdi
+	js case1
+	jz case2
+	mov $1, %rax
+	ret
+case1:
+	mov $-1, %rax
+	ret
+case2:
+	mov $0, %rax
+	ret
+}
+{ #assembly code (compiler's result)
+  	.globl signum
+signum:
+	test %rdi, %rdi
+	js case1
+	jz case2
+	mov $0x1, %eax
+	retq
+case1:
+	mov $0xffffffffffffffff, %rax
+	retq
+case2:
+	mov %rdi, %rax
+	retq
+}
+void comp2(long a, long *p){
+     if(a && *p < a)
+       *p = a;
+}
+
+{ #assembly code
+	.globl comp2
+comp2:
+	test %rdi, %rdi
+	jnz l2
+	retq
+l2:
+	cmp (%rsi), %rdi
+	jl end2
+	retq
+end2:
+	mov %rdi, (%rsi)
+	retq
+}
+{ #assembly code
+	.globl comp2
+comp2:
+	test %rdi, %rdi
+	jz leave
+	cmp (%rsi), %rdi
+	jl leave
+	mov %rdi, (%rsi)
+leave:
+	retq
+
+}
+unsigned long factorial(unsigned long n){
+  if(n == 0) return 1;
+  return n*factorial(n-1);
+}
+{ #assembly code non-optimized
+	   .globl factorial
+factorial:
+	endbr64
+	push %rbp
+	mov %rsp, %rbp
+	sub $0x10, %rsp
+	mov %rdi, -0x8(%rbp)
+	cmpq $0x0, -0x8(%rbp)
+	jne l1
+	mov $0x1, %eax
+	jmp end
+l1:	mov -0x8(%rbp), %rax
+	sub $0x1,%rax
+	mov %rax, %rdi
+	callq l2
+l2:	imul -0x8(%rbp), %rax
+end:	leaveq
+	retq
+}
+{ #assembly code optimized
+	   .globl factorial
+factorial:
+	test %rdi, %rdi
+	jne l1
+	mov $0x1, %eax
+	retq
+l1:	push %rbx
+	mov %rdi, %rbx
+	lea -0x1(%rdi),%rdi
+	callq l2
+l2:	imul %rbx, %rax
+	pop %rbx
+	retq
+}
+
+unsigned long factorial(unsigned long n){
+  long result = 1;
+  while(n > 1){
+    result *= n;
+    n = n - 1;
+  }
+  return result;
+}
+{#assembly shit
+
+	.globl factorial
+factorial:
+	mov $1, %rax
+while:	cmp $1, %rdi
+	jbe end
+	imul %rdi, %rax
+	sub $1, %rdi
+	jmp while
+end:    retq
+
+}
+
+{
+void g(long *){
+
+}
+
+long f (long n){
+  long l = 0;
+  g(&l);
+  return l;
+}
+}
+{#assembly code
+	.globl f
+f:
+	sub $0x18, %rsp
+	movq $0x0,0x8(%rsp)
+	lea 0x8(%rsp), %rdi
+	callq g
+g:	mov 0x8(%rsp), %rax
+	add $0x18, %rsp
+	retq
+}
+(Above) Passing a reference to a parameter as a variable, you push the stack, move the value to %rdi,
+call the function, do your work and then
+{
+struct rec{
+       int a[4];          //offset 0  (16 byte long)
+       long i;            //offset 16 (8  byte long)
+       struct rec *next;  //offset 24 (8  byte long)
+}            %rdi           %esi
+void set_val(struct rec *r, int val){
+     while(r){
+	long i = r -> i;
+	r -> a[i] = val;
+	r = r -> next;
+     }
+}
+}
+{ x86 assembly code
+.globl
+set_val:
+	test %rdi, %rdi
+	je return
+	
+	movq 16(%rdi), %rax
+	movq %esi, (%rdi,%rax,4)
+	movq 24(%rdi), %rdi
+	jmp set_val
+return:
+	ret
+
+
+}
+
+
+
+
+
+
+PROCESSOR DESIGN:
+
+The halting problem
+A program takes a parameter other program and an input. P1 tells you whether P2 halts on an input. Aparrently this cannot exist.
+
+The turing machine is universal. A program is Turing Complete if something(unknown).
+
+This is a few and far between job (very few jobs in this area)
+
+Y86-64 programmer-visible state
+https://docs.google.com/presentation/d/1EmBaYHXNjgCWADF3ittNs_rCzn3HYK-nUWSut_YvBGU/edit#slide=id.g7163818321_0_54
+Registers:
+--Same registers and names as X86 except for %r15
+Condition Codes
+--ZF,SF,OF
+Program Counter: %rip
+Status Code: indicates whether program is running normally or some special event occured
+Memory: Normal
+Check the slideshow for Y86 instructions
+
+Everything is 64bit (8 byte)
+Smallest instruction is 1 bit
+Largest is 10 bytes
+4bits needed for specify register
+No %r15 because %r15 is used to ignore operand
+How many addressing modes supported: 5(3) immediate, register, absolute, indirect, base+displacement
+Jump and Call destinations are absolute addresses
+
+Stored in little endian format (least significant byte first) 0x1234567891011 => 01 91 78 56 34 12
+
+EXAMPLES
+{
+long sum(long *start, long count){
+  long sum = 0;
+  while(count) {
+    sum += *start;
+    start++;
+    count--;
+  }
+  return sum;
+}
+
+{ # y86 code
+  # %rdi = *start
+  # %rsi = count
+
+Top:
+	xorq %rax, %rax       #initialize sum to zero (sum = 0)
+	irmovq $8, %r8        #hold constant 8
+	irmovq $1, %r9        #hold constant 1
+Loop:
+	andq %rsi, %rsi       #check parameter
+	je End                #if count == 0, end
+	mrmovq (%rdi), %r10   #get *start
+	addq %r10, %rax       #add value of array to running sum (sum += *start)
+	addq %r8, %rdi        #move pointer down array (start++)
+	subq %r9, %rsi        #subtract count (count--)
+	jmp Loop              #return to top of loop
+End:
+	ret                #return
+
+}
+
+{ # y86 code
+  # %rdi = *start
+  # %rsi = count
+
+Top:
+	xorq %rax, %rax       #initialize sum to zero (sum = 0)
+	irmovq $8, %r8        #hold constant 8
+	irmovq $1, %r9        #hold constant 1
+	andq %rsi, %rsi       #check parameter
+	jmp test                #if count == 0, end
+loop:
+	mrmovq (%rdi), %r10   #get *start
+	addq %r10, %rax       #add value of array to running sum (sum += *start)
+	addq %r8, %rdi        #move pointer down array (start++)
+	subq %r9, %rsi        #subtract count (count--)
+test:
+	jne loop              #stop when 0
+	ret                   #return
+
+}
+
+
+Circuits:
+-  => horizontal wire
+|  => vertical wire
+\  => Transistor (switch)
++  => junction
+>  => vertical wire passthrough (no cross connection)
+^  => horizontal wire passthrough (no cross connection)
+
+NOT GATE:
+	5v
+         |
+         |
+      +--\
+      |  |
+IN----|  +-----Out
+      |  |
+      +--\
+         |
+         |
+    	 0V(ground)
+A | Out
+0 | 1
+1 | 0
+
+NAND Gate:
+--A universal gate, can build everything from this
+           5v  5v
+           |    |
+A--+------->----\
+   |       |    |
+B-->---+---\    |
+   |   |   +----------Out
+   |   |     |
+   +--->-----\
+       |     |
+       +-----\
+             0V
+A B | Out
+0 0 | 1
+1 0 | 1
+0 1 | 1
+1 1 | 0
+
+AND(A,B) ==> NAND(NAND(A,B),NAND(A,B))
+OR(A,B)  ==> NAND(Not(A), Not(B))
+
+andq => feeds 64bits into and gates and takes the result
+--and(a0,b0)
+--and(a1,b1)
+--...
+--and(a63,b63)
+
+XOR Gate:
+NAND(NAND(A,NAND(A,B)),NAND(B,NAND(A,B)))
+
+A B | Out
+0 0 | 0
+0 1 | 1
+1 0 | 1
+1 1 | 0
+
+Half Adder (can only do the one bit with no carry in):
+-- parrallel A^B, A&B
+-- two outputs (sum,carry)
+
+A B A^B A&B
+0 0  0   0   =>0 + 0 = 0 with 0 carry
+0 1  1   0   =>0 + 1 = 1 with 0 carry
+1 0  1   0   =>1 + 0 = 1 with 0 carry
+1 1  0   1   =>1 + 1 = 0 with 1 carry
+
+
+Full Adder:
+-- 3 input, 2 output
+-- halfadd(halfadd(a,b) + carryin)
+-- carryout => (carryout1 | carryout2)
+-- two outputs (sum, carryout)
+
+64-bit adder
+-- string of full adders
+-- carryin0 = 0
+-- next carry in = result of add1
+-- result = 64bit number with cf as final carry out
+
+Equal: Not(XOR(A,B))
+
+64Bit Equal:
+--64 equal gates into one and gate
+
+Selection Gate (MUX):
+--OR(AND(NotS, A),And(S,B))
+--0 selects A, 1 selects B, Out = whichever selected
+--Inputs A,B,Selection
+--64bit is 64 MUXs with one Selection line
+
+A B S | Out
+0 0 0 |  0
+0 1 0 |  0
+1 0 0 |  1
+0 0 1 |  0
+0 1 1 |  1
+1 0 1 |  0
+1 1 1 |  1
+
+MUX4:
+--selects between 4 lines
+--Inputs: A,B,C,D,S1,S2
+--Binary selection 0,0=A 0,1=B 1,0=C 1,1=D
+--Can be built with three MUXs
+
+Put it all together (arithmetic and logic unit (ALU))!:
+--Input X,Y,S1,S2
+--addq = 0, subq = 1, andq = 2, xorq = 3
+--Have adder, subber, ander, and xor at all times computed and then pick which to display based on selection line
+--Generates extra heat and uses energy pointlessly, but gives us speeeed
+--This is why y86 has add,sub,and,xor as 60,61,62,63 codes (6 tells to route the next number to the arithmetic
+  operators
+
+SEQUENTIAL PROCESSING:
+https://docs.google.com/presentation/d/1sdtiVOc-J6_9EaLMRp8pt2SkbE_mQY4DW8Le7V2tB2A/edit#slide=id.g101c50ca323_0_228
+
+Memory Elements:
+--PC
+  Contains program counter
+  (delivers 64bit instruction)
+--Reg File
+  Delivers 2 64bit values
+  Takes in code instruction (tells it what to do)
+--I Mem (instruction memory)
+  Takes in address
+  Delivers 4bit code (0 = halt, 1 = Not, 3 = IRmovq, 6 = arithmetic operation)
+    4bit fun(function) (indicates which arithmetic, which jump, etc),
+    4bit rA (register A) (numbered 0-14, 15 = no register),
+    4bit rB (register B) (numbered 0-14, 15 = no register),
+    64bit value C (immediate value interested in)
+--D Mem (Data Memory Element)
+  Takes in 64bit address, 64bit data
+  Delivers 64bit valueM
+PC Adder
+-Takes current Instruction counter and adds some constant that will be the theoretical next instruction
+-Returns valP (valP is correct for all instructions except for jmp, call, ret)
+
+Memory feeds into Combinational Circuit which feeds into memory (basic how computer works)
+Combinational Circuit is slow if it does everything, so make specialized circuits to do each part
+--roughly CPU vs GPU type of things
+--originally developed by Henry Ford (says Alain) (built cars this way)
+--Called "Pipelining"
+
+Pipelining:
+Break computation into stages:
+--Fetch - get the code
+--Decode - understand the code
+--Execute - do the work
+--Memory - change the values
+--Write Back - return the result
+
+Create 5 Pipeline registers
+--Allow for values to be remembered(and/or changed) across stages
+--Captures instruction state up to that point
+--allows for starting next instruction before first instruction has fully completed
+--Ideally, it allows for 5(could be more or less) instructions to be done at the same time; UNLESS some instruction
+  requires the results of a previous instruction
+
+PIPELINING PRESENTATION:
+
+Sequential (unpipelined) computation => One line at a time
+Pipelining => Start new fetch as soon as previous fetch in place
+Clock cycle goes faster if more units can be done in 1 overall cycle time.
+Frequency of execution depends on length of longest instruction
+
+In pipelining, it doesnt make any one instruction faster, it rather allows for more instructions to be started faster.
+In fact, pipelining makes every one instruction slightly slower.
+If the parts are inequal, then the longest part is the one that governs the frequency.
+There are diminishing returns as each computational logic unit's length approaches the register length (see slide 13)
+
+What if there is a hazard?
+1. Bubble The machine introduces a bubble that allows existing instructions to continue, and delays future
+   instructions by duplicating a stage of the current instruction (slide 27).
+2. Forwarding: Having a value skip a pipeline and jump to where it needs to be. However, this is not always possible.
+3. The processor uses a combination of both bubbles and forwarding in order to work quickest.
+
+HOMEWORK 10 Throughputs/Pipelining/Speedups/Handling Hazards:
+(https://docs.google.com/forms/d/e/1FAIpQLSeVzod7EEyF1M6Cnv85X83HP_x0ZXtDdTa5rEzjliaQ2mAdzQ/viewscore?viewscore=AE0zAgCqhdL7VtqY5pETuORCg0kr24gRGA66lyRG2mdzLfCdEFrMq_JF06YgRKVTiQ)
+GIPS (Giga-instructions per second) = 1000/Throughput*(#ofpipes) OR 1000/SlowestSection
+Throughput = Eachsection + eachPipe
+SlowestSection = thing+pipe
+Speedup = GIPS(A)/GIPS(B)
+
+
+Caches:
+--Access Time = hit latency + miss rate + miss penalty
+
+Four questions:
+Q1- Where?
+--Fully associative (minimize miss rate), direct map, two-way associative
+
+Q2- How find page (block) in memory
+--table indexed by page number
+
+Q3- Replacement
+--LRU (least recently used)
+
+Q4- Writes?
+--Write back/ Write through
+
+--If block size = 4096 bytes (4KB), offset = 12 bits, rest of address is tag (in fully associative)
+----Tag also referred to as "Virtual Page Number"
+
+"Page Table"
+An associative array of 4kb size that leads to page frames that have the actual program data.
+--Each spot on the array is aligned to the 4kb slot which leaves the last 12 bits 0.
+  --Those 12 bits are then used for the valid bit, and dirty bit (and other things)
+  --Hierarchy of tables
+  --Accessing each level takes a memory access (which is slow), so we have a cache for pages to speed it up.
+
+Translation Lookaside Buffer (TLB)
+--Takes virtual page number to lookup the TLB
+--fully associative cache
+  --Very short (16 entries)
+--stores tag (most significant 16 bits) and returns physical address (page frame number)
+  --page frame number is multiplexed and returned with an offset (offset the 12 bits from the address)
+--has valid bit (last bit)
+
+(Memory in this section refers to DRAM (dynamic ram))
+--Takes 1 transistor per bit for storage
+(Caches are made of SRAM (Static ram))
+--Needs 6 transistors per bit for storage
+
+Accessing memory is 3 orders of magnitude between the time a request by the cpu core before main memory can provide data.
+This is why we create intermediate memory stages that are smaller and quicker getting closer to the cpu (called caches).
+These caches allow us to store smaller amounts of data for quicker use by the cpu. Caches keep a duplicate copy of what exists
+in memory, but closer to where it may be needed.
+
+Works on the principle of Locality:
+--Two forms: Spatial and Temporal
+Temporal: If you've accessed item A recently, it leads to believe that you will reaccess item A soon.
+Spatial: If you accessed an item, you are likely to access a neighboring item as well.
+
+Tech has made a lot of progress in the density of memory (larger and larger DRam), but not much progress in the speed of memory.
+
+Memory works similarly to research papers.
+--Need articles/books to back up your essay
+A.
+--Go to library to get specific quote
+--Leave and continue writing
+--Go back and get second quote
+B.
+--Go to library, borrow book
+--Take sections
+--Return at the end
+----However there is finite room on your desk, so you can't bring all of the library books with you
+
+Performance curve is a negative parabola (with the best performance being at a midrange transfer size)
+because you can exploit locality for better performance.
+Intel picked the unit of transfer (block) as 64bytes (block size).
+
+In the cache you store the data as well as the address (the tag, duh)
+
+HITS AND MISSES:
+--If the cache looks up the block and the memory tag matches, this was a cache "hit"
+--If the cache looks up the block and the memory tag does not match, this was a cache "miss" and
+  the cache updates the current tag with the new data
+  --On a cache miss, the cache replaces the LRU (least recently used) data (or the empty space).
+  --Sometimes the cache replaces randomly (saves small amount of data space).
+  --Cold/Compulsory miss => first time (there will always be one miss)
+  --Capacity miss => missed in the past, but the data has been evicted because cache is not large enough
+    (whole cache is full in a fully-associative cache)
+  --Conflict Miss => Because other data in this data's seat, there was a miss. (there is enough space in the cache,
+    but the block where this data goes is full)
+
+Direct Map Cache: Exactly one spot for each cache block to go.
+--(https://docs.google.com/document/d/1rYjnjcr5lnefLb6gGKcr23L0EgGxxEskZ85Y18s-9gI/edit)
+--11 bit Address => 5 bit tag, 6 bit offset
+
+Fully associative Cache: Blocks can be put wherever (requires searching whole cache for data) (slower)
+
+Two-Way(four-way is extended two-way) set associative Cache:
+--(https://drive.google.com/file/d/1ldZ6psAJqXj-yz9yhISC6l2bABy_Irl4/view?usp=sharing) (board drawing)
+--(https://docs.google.com/document/d/1JzLMmT6oLcaBBFAMAFY10_jNjSNBEtfrzAaCOPZBbC8/edit) (activity)
+--Take Direct mapped cache and break it into subsets
+  --(slot 0,1 is set 1), (slot 2,3 is set 2), etc
+--Breaks address into three areas (11 bit address => 3 bit tag, 2 bit index, 6 bit offset)
+
+Cache Memory Activity: Basic Cache Lookups:
+--https://docs.google.com/document/d/179tmOubWLExav--gd7pgvlEZ0oXShHTgxMNKpwG0Xw4/edit
+
+
+Given:
+11-bit memory addresses
+Cache block size: 64 bytes
+Cache size: 512 bytes
+Mapping function
+cache block number = memory block number % number of blocks in cache
+
+Memory address    Memory block number    Cache block number
+408    		  	 6     		       6
+1012			 15		       7
+1416			 22		       6
+968			 15		       7
+1865			 29		       5
+
+Block 6 (bits 2-4 (left justified)):
+408   = 0x198 = 001.1001.1000
+1416  = 0x588 = 101.1000.1000
+
+Block 7 (bits 2-4 (left justified)):
+1012  = 0x3F4 = 011.1111.0100
+918   = 0x3C8 = 011.1100.1000
+
+GENERAL
+
+XXX = 00 (Tag) 000 (Block ID) 000000 (Offset)
+The address stores the tag in the block ID space
+Cache tag is most significant bits after block size (6 bit block size, 5 bit tag for an 11 bit section/6bit offset)
+
+For the address, store first two bits to identify which memory is stored at this location. 
+(note 408 = 00; 1416 = 10 and therefore are different blocks)
+(note 1012 = 01; 918 = 01 and therefore are the same block at different offsets)
+
+Each cache block has data, tag, and valid flag.
+--Data has memory data of block size
+--Tag has identifier for data in block size
+--valid flag shows if block has been filled or not
+
+Writing back to memory:
+--"Write Through" write to the cache and then propogate the value all the way to memory.
+  --"Every time you make an update, you immediately write through the update to memory."
+--"Write Back" Update memory at intervals from the cache data
+  --Mark any modified entries before overwriting with new cache data
+    (need a "journey bit"; the cache is not the same as memory)
+
+Graphics requires the memory to be updated (it cannot access the cache (most of the time) and therefore would be
+using old data).
+
+BUFFERS:
+{
+struct s1 {
+       char c;   // offset 0
+       int i[2]; // offset 4  (gets bumped with 3 byte buffer between character)
+       double v; // offset 16 (gets bumped with 4 byte buffer between int)
+}
+
+}
+Compiler added a 7 byte buffer after "char c" in order to align variables properly.
+
+Alignment rule: (https://docs.google.com/document/d/1ckvcbGPtdFh6ByAnKOarzOW70ZrN_KlrHA98SAd6M_A/edit)
+--"Particular object must be on an address that is a multiple of it's size"
+  --integer must be aligned to a multiple of 4
+  --double must be aligned to a multiple of 8
+--Structure has alignment requirements such that it can be in an array (beginning access must be multiple of largest
+  instance variable with a requirement) (S1 above would have to be of a size multiple of 8 because double).
+
+
+
+
+RANDOM OTHER SHIT:
+
+Colors for Ross:
+There are two warring chess factions, white and black. Each color is aligned with one side.
+Red, Orange, Yellow are with White; Blue, Green, Purple are with Black
+GRAY ARE THE MEDIATORS LMAO They wish for pure balance xD
+The eternal conflict continues :) <3

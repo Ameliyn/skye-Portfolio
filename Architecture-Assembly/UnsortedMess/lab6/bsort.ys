@@ -1,0 +1,89 @@
+# execution begins at address zero
+        .pos    0
+        irmovq  stack, %rsp     # set up the stack pointer
+        call    main            # start main
+        halt                    # done
+
+# set up array, length, followed by data
+        .align  8
+count:
+        .quad   0x0A
+array:
+        .quad   0x0FFF
+        .quad   0x0F20
+        .quad   0xFFFFFFFFFFFFFF45
+        .quad   0xFFFFFFFFFFFFFFFF
+        .quad   0x01
+        .quad   0x03
+        .quad   0x04
+        .quad   0x0A
+        .quad   0x09
+        .quad   0x11
+
+main:
+        irmovq  array, %rdi
+        irmovq  count, %rax         # move address of count into %rax
+        mrmovq  (%rax), %rsi        # load content of count into %rsi
+        call    sort
+        ret
+
+# void sort(long *data, long count)
+# data in %rdi, count in %rsi
+sort:
+	irmovq 0x8, %r8        #hold constant 8
+	irmovq 0x1, %r9        #hold constant 1
+	
+	#set up loop One
+	subq %r9, %rsi	      #%rsi holds last
+	andq %rsi, %rsi       #check parameter
+	jmp testOne           
+loopOne:
+	#set up loop two
+	irmovq $0, %r10       #%r10 holds i = 0
+	rrmovq %rdi, %rax     #%rax holds *data[0]
+	
+	#set condition flags
+	rrmovq %r10, %r11   #j = i
+	subq %rsi, %r11       #j -= last if j < 0 then j < last
+	#end set condition flags
+
+	jmp testTwo
+loopTwo:
+	#if(data[i+1] < data[i])
+	mrmovq (%rax), %r12	#%r12 holds long temp = data[i]
+	addq %r8, %rax 	   	#%rax is pointer to data[i+1]
+	mrmovq (%rax), %r13  	#%r13 holds long t = data[i+1]
+	subq %r8, %rax 		#return %rax to data[i]
+
+	#check if statement
+	subq %r12, %r13		#temp -= t if temp > 0 data[i] > data[i+1]
+	jge endLoopTwo		#if data[i] < 0 skip if statement
+	
+	#execute if statement
+	mrmovq (%rax), %r12 	#%r12 holds long temp = data[i]
+	addq %r8, %rax 		#%rax is pointer to data[i+1]
+	mrmovq (%rax), %r13  	#%r13 holds long t = data[i+1]
+	rmmovq %r12, (%rax) 	#data[i+1] = data[i]
+	subq %r8, %rax 		#rax is pointer to data[i]
+	rmmovq %r13, (%rax)  	#data[i] = t
+
+endLoopTwo:
+	addq %r9, %r10        #i++
+	addq %r8, %rax	      #%rax holds *data[i]
+	
+	#set condition codes
+	rrmovq %r10, %r11   #j = i
+	subq %rsi, %r11       #j -= last if j < 0 then i < last
+	#end condition codes
+	
+testTwo:
+	jl loopTwo            #if i < last continue loopTwo
+	subq %r9, %rsi         #last -= 1
+testOne:
+	jne loopOne	      #if last > 0 continue
+	ret                   #return
+
+	
+# stack starts here and grows to lower addresses
+        .pos    0xFF8
+stack:

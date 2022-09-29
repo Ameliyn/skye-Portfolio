@@ -1,0 +1,112 @@
+1.
+
+a. false
+b. true
+c. false
+d. true
+e. true
+f. true
+g. false ** true //deallocating the stack
+h. true
+i. false
+j. true
+k. true
+l. true
+
+
+2.
+
+The first 6 arguments are passed through registers in the order %rdi, %rsi
+%rdx, %rcx, %r8, %r9. Anything beyond these six parameters are allocated
+to the stack in the order that they are recieved.
+
+**Integral arguments are put into registers, not just any arguments. Also,
+arguments pushed to the stack are in reverse order and all data sizes are
+rounded up to a multiple of 8 bytes on the stack.
+
+3.
+
+x = 0x87 => 1000.0111
+
+a. x << 3 => 0011.1000 => 0x38
+b. x >> 2 (logical) => 0010.0001 => 0x21
+c. x >> 2 (arithmetic) => 1110.0001 => 0xE1
+
+
+4.
+
+long inc_a(long a) {return a++;}
+{
+inc_a:
+	movq (%rdi), %rax
+	ret
+}
+long inc_b(long b) {return ++b;}
+{
+inc_b:
+	irmovq $1, %rax
+	addq $rdi, %rax
+	ret
+}
+
+*Alain says it's the other way around. Where ++b returns the original value
+and a++ returns a+1... Not sure about that. When we put it into the compiler
+the x86 code implemented it how we did, not how alain did.
+
+5.
+
+no pipeline 300ps with register 20ps
+a. 320ps
+b. 120ps
+c. 170ps
+
+6.
+
+loop:
+	movl $0x0, %eax
+	jmp .L2
+.L3:
+	subl $1, %edi
+	addl $1, %esi
+	addl $1, %eax
+.L2:
+	cmpl %esi, %edi    #%edi -= %esi (without changing)
+	jg .L3
+	ret
+
+C Code:
+
+int loop (int x, int y)
+{
+
+  int result;
+  for(result = 0;x > y;result++){
+    x--;
+    y++;
+  }
+  return result;
+  
+}
+
+
+7.
+
+Fun1
+
+8.
+
+a. CT CT CT CT CT CT CT CT CI CI CI CO CO
+b.
+  0XE34 => 01110001.101.00
+  Block Offset        => 0x0
+  Cache Index 	      => 0x5
+  Cache Tag           => 0x71
+  Cache               => Hit YES!
+  Cache Byte Returned => 0x0B
+
+
+
+
+
+
+

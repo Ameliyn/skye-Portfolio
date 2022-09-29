@@ -1,0 +1,89 @@
+                            | # execution begins at address zero
+0x000:                      |         .pos    0
+0x000: 30f4f80f000000000000 |         irmovq  stack, %rsp     # set up the stack pointer
+0x00a: 807000000000000000   |         call    main            # start main
+0x013: 00                   |         halt                    # done
+                            | 
+                            | # set up array, length, followed by data
+0x018:                      |         .align  8
+0x018:                      | count:
+0x018: 0a00000000000000     |         .quad   0x0A
+0x020:                      | array:
+0x020: ff0f000000000000     |         .quad   0x0FFF
+0x028: 200f000000000000     |         .quad   0x0F20
+0x030: 45ffffffffffffff     |         .quad   0xFFFFFFFFFFFFFF45
+0x038: ffffffffffffffff     |         .quad   0xFFFFFFFFFFFFFFFF
+0x040: 0100000000000000     |         .quad   0x01
+0x048: 0300000000000000     |         .quad   0x03
+0x050: 0400000000000000     |         .quad   0x04
+0x058: 0a00000000000000     |         .quad   0x0A
+0x060: 0900000000000000     |         .quad   0x09
+0x068: 1100000000000000     |         .quad   0x11
+                            | 
+0x070:                      | main:
+0x070: 30f72000000000000000 |         irmovq  array, %rdi
+0x07a: 30f01800000000000000 |         irmovq  count, %rax         # move address of count into %rax
+0x084: 50600000000000000000 |         mrmovq  (%rax), %rsi        # load content of count into %rsi
+0x08e: 809800000000000000   |         call    sort
+0x097: 90                   |         ret
+                            | 
+                            | # void sort(long *data, long count)
+                            | # data in %rdi, count in %rsi
+0x098:                      | sort:
+0x098: 30f80800000000000000 | 	irmovq 0x8, %r8        #hold constant 8
+0x0a2: 30f90100000000000000 | 	irmovq 0x1, %r9        #hold constant 1
+                            | 	
+                            | 	#set up loop One
+0x0ac: 6196                 | 	subq %r9, %rsi	      #%rsi holds last
+0x0ae: 6266                 | 	andq %rsi, %rsi       #check parameter
+0x0b0: 703401000000000000   | 	jmp testOne           
+0x0b9:                      | loopOne:
+                            | 	#set up loop two
+0x0b9: 30fa0000000000000000 | 	irmovq $0, %r10       #%r10 holds i = 0
+0x0c3: 2070                 | 	rrmovq %rdi, %rax     #%rax holds *data[0]
+                            | 	
+                            | 	#set condition flags
+0x0c5: 20ab                 | 	rrmovq %r10, %r11   #j = i
+0x0c7: 616b                 | 	subq %rsi, %r11       #j -= last if j < 0 then j < last
+                            | 	#end set condition flags
+                            | 
+0x0c9: 702901000000000000   | 	jmp testTwo
+0x0d2:                      | loopTwo:
+                            | 	#if(data[i+1] < data[i])
+0x0d2: 50c00000000000000000 | 	mrmovq (%rax), %r12	#%r12 holds long temp = data[i]
+0x0dc: 6080                 | 	addq %r8, %rax 	   	#%rax is pointer to data[i+1]
+0x0de: 50d00000000000000000 | 	mrmovq (%rax), %r13  	#%r13 holds long t = data[i+1]
+0x0e8: 6180                 | 	subq %r8, %rax 		#return %rax to data[i]
+                            | 
+                            | 	#check if statement
+0x0ea: 61cd                 | 	subq %r12, %r13		#temp -= t if temp > 0 data[i] > data[i+1]
+0x0ec: 752101000000000000   | 	jge endLoopTwo		#if data[i] < 0 skip if statement
+                            | 	
+                            | 	#execute if statement
+0x0f5: 50c00000000000000000 | 	mrmovq (%rax), %r12 	#%r12 holds long temp = data[i]
+0x0ff: 6080                 | 	addq %r8, %rax 		#%rax is pointer to data[i+1]
+0x101: 50d00000000000000000 | 	mrmovq (%rax), %r13  	#%r13 holds long t = data[i+1]
+0x10b: 40c00000000000000000 | 	rmmovq %r12, (%rax) 	#data[i+1] = data[i]
+0x115: 6180                 | 	subq %r8, %rax 		#rax is pointer to data[i]
+0x117: 40d00000000000000000 | 	rmmovq %r13, (%rax)  	#data[i] = t
+                            | 
+0x121:                      | endLoopTwo:
+0x121: 609a                 | 	addq %r9, %r10        #i++
+0x123: 6080                 | 	addq %r8, %rax	      #%rax holds *data[i]
+                            | 	
+                            | 	#set condition codes
+0x125: 20ab                 | 	rrmovq %r10, %r11   #j = i
+0x127: 616b                 | 	subq %rsi, %r11       #j -= last if j < 0 then i < last
+                            | 	#end condition codes
+                            | 	
+0x129:                      | testTwo:
+0x129: 72d200000000000000   | 	jl loopTwo            #if i < last continue loopTwo
+0x132: 6196                 | 	subq %r9, %rsi         #last -= 1
+0x134:                      | testOne:
+0x134: 74b900000000000000   | 	jne loopOne	      #if last > 0 continue
+0x13d: 90                   | 	ret                   #return
+                            | 
+                            | 	
+                            | # stack starts here and grows to lower addresses
+0xff8:                      |         .pos    0xFF8
+0xff8:                      | stack:
